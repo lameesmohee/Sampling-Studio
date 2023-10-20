@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1259</width>
-    <height>992</height>
+    <height>1063</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,13 +22,13 @@
         <property name="minimumSize">
          <size>
           <width>300</width>
-          <height>1000</height>
+          <height>600</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>300</width>
-          <height>1000</height>
+          <height>900</height>
          </size>
         </property>
         <property name="frameShape">
@@ -55,7 +55,7 @@
           <string>Frequency</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="freq_input">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -68,7 +68,7 @@
           <string notr="true">border: transparent;</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="freq_up">
          <property name="geometry">
           <rect>
            <x>220</x>
@@ -78,13 +78,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>+</string>
+          <string/>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="freq_down">
          <property name="geometry">
           <rect>
            <x>260</x>
@@ -94,13 +94,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>-</string>
+          <string/>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="signals_names">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -128,7 +128,7 @@
           <string>Delete a signal</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_5">
+        <widget class="QPushButton" name="add_signal_button">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -146,7 +146,7 @@
           <string>Add Signal</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="delete_signal_button">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -164,7 +164,7 @@
           <string>Delete</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_3">
+        <widget class="QLineEdit" name="signal_name_input">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -195,7 +195,7 @@
           <string>Signal Name</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="amp_down">
          <property name="geometry">
           <rect>
            <x>260</x>
@@ -205,13 +205,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>-</string>
+          <string/>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="amp_up">
          <property name="geometry">
           <rect>
            <x>220</x>
@@ -221,13 +221,13 @@
           </rect>
          </property>
          <property name="text">
-          <string>+</string>
+          <string/>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_2">
+        <widget class="QLineEdit" name="amp_input">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -430,6 +430,10 @@
            <height>400</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">border:0;
+</string>
+         </property>
         </widget>
        </widget>
       </item>
@@ -468,6 +472,11 @@
            <height>400</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">border:0;
+
+</string>
+         </property>
         </widget>
        </widget>
       </item>
@@ -482,7 +491,7 @@
         <property name="maximumSize">
          <size>
           <width>700</width>
-          <height>400</height>
+          <height>350</height>
          </size>
         </property>
         <property name="frameShape">
@@ -505,6 +514,10 @@
            <width>700</width>
            <height>400</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:0;
+</string>
          </property>
         </widget>
        </widget>
