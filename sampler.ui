@@ -258,7 +258,7 @@
           <string>Amplitude</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_9">
+        <widget class="QLabel" name="SNR">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -276,7 +276,7 @@
           <string>SNR</string>
          </property>
         </widget>
-        <widget class="QSlider" name="horizontalSlider_3">
+        <widget class="QSlider" name="SNR_Slider">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -289,7 +289,7 @@
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-        <widget class="QCheckBox" name="checkBox_3">
+        <widget class="QCheckBox" name="interpolation">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -307,7 +307,7 @@
           <string>Show Interpolation</string>
          </property>
         </widget>
-        <widget class="QCheckBox" name="checkBox_4">
+        <widget class="QCheckBox" name="sampling">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -325,7 +325,7 @@
           <string>Show Samples Points</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_10">
+        <widget class="QLabel" name="frequency_options">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -338,7 +338,7 @@
           <string>Sampling Frequency Options</string>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboBox_3">
+        <widget class="QComboBox" name="freq_options">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -358,7 +358,7 @@
           </property>
          </item>
         </widget>
-        <widget class="QLabel" name="label_11">
+        <widget class="QLabel" name="sampling_freq">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -376,7 +376,7 @@
           <string>Sampling Frequency (Hz)</string>
          </property>
         </widget>
-        <widget class="QSlider" name="horizontalSlider_4">
+        <widget class="QSlider" name="sampling_frequency_slider">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -457,7 +457,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <widget class="QGraphicsView" name="graphicsView_2">
+        <widget class="QGraphicsView" name="graphicsView_interpolation">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -532,7 +532,7 @@
      <x>0</x>
      <y>0</y>
      <width>1259</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
