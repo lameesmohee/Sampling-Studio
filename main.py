@@ -32,6 +32,7 @@ class MainApp(QMainWindow, MainUI):
         self.styles()
         self.signal_waveforms = []
         self.existed_signals = {}  # {signal_name:[freq, amp]}
+        self.plotted_signals = {}
 
     def handle_buttons(self):
         self.freq_up.clicked.connect(lambda: self.freq_handling(self.freq_up))
@@ -40,6 +41,15 @@ class MainApp(QMainWindow, MainUI):
         self.amp_down.clicked.connect(lambda: self.amp_handling(self.amp_down))
         self.add_signal_button.clicked.connect(self.signal_name_handling)
         self.add_signal_button.clicked.connect(self.plot)
+        self.delete_signal_button.clicked.connect(self.delete_signal)
+
+    # def remove_signal(self):
+    #     selected_signal = self.signals_names.currentText()
+    #     if selected_signal:
+    #         self.existed_signals.pop(selected_signal, None)
+    #         self.signal_waveforms = [waveform for waveform in self.signal_waveforms if waveform[0] != selected_signal]
+    #         self.signals_names.removeItem(self.signals_names.currentIndex())
+    #         self.plot()
 
     def styles(self):
         self.graphicsView.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -133,15 +143,15 @@ class MainApp(QMainWindow, MainUI):
         signal_waveform = self.cos_creation(f, amp)
         # Adding each signal to a list, so it can be summed
         self.signal_waveforms.append(signal_waveform)
+        self.plot_signal(self.signal_name, signal_waveform)
         print(self.existed_signals)
-
+    
     def plot(self):
         scene = QGraphicsScene()
         self.graphicsView.setScene(scene)
         self.figure = Figure(figsize=(9.5, 3.5), dpi=80)
         canvas = FigureCanvas(self.figure)
         scene.addWidget(canvas)
-
         if self.signal_waveforms:
             # Combine all signal waveforms
             combined_signal = np.sum(self.signal_waveforms, axis=0)
@@ -155,6 +165,38 @@ class MainApp(QMainWindow, MainUI):
             ax.set_ylabel('Amplitude')
             canvas.draw()
 
+    def plot_signal(self, signal_name, signal_waveform):
+        if signal_name in self.plotted_signals:
+            # Remove the existing plot from the figure
+            self.plotted_signals[signal_name].remove()
+
+        ax = self.figure.add_subplot(111)
+        ax.plot(np.linspace(0, 2, 1000), signal_waveform)
+        self.plotted_signals[signal_name] = ax
+        self.figure.canvas.draw()
+
+    def delete_signal(self):
+        # Get the selected signal name to delete from the combo box
+        selected_signal = self.signals_names.currentText()
+        if selected_signal:
+            # Remove the selected signal from the dictionary
+            if selected_signal in self.existed_signals:
+                del self.existed_signals[selected_signal]
+            # Remove the selected signal from the combo box
+            self.signals_names.removeItem(self.signals_names.currentIndex())
+            self.signal_waveforms = []
+            for signal_name, (f, amp) in self.existed_signals.items():
+                signal_waveform = self.cos_creation(f, amp)
+                self.signal_waveforms.append(signal_waveform)
+            # Clear the QGraphicsView and plot the updated signal
+            self.plot()
+        else:
+            # If no signal is selected, show a warning message
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setInformativeText("Please select a signal to delete.")
+            msg.show()
+            msg.exec_()
 
 def main():
     app = QApplication(sys.argv)
