@@ -1,3 +1,4 @@
+
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -188,6 +189,10 @@ class MainApp(QMainWindow, MainUI):
             canvas.draw()
             if self.sampling.isChecked():
                 self.Sampling()
+            else:
+                if self.interpolation.isChecked():
+                    self.Interpolation()
+
         else:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
@@ -240,6 +245,8 @@ class MainApp(QMainWindow, MainUI):
                 self.ax1.plot(self.time, sum_of_sampling_points, 'ro', color='r')
                 self.figure_sampling.canvas.draw()
 
+        if self.interpolation.isChecked():
+            self.Interpolation()
 
 
 
@@ -288,13 +295,47 @@ class MainApp(QMainWindow, MainUI):
             msg.exec_()
 
     def Interpolation(self):
-        pass
+        if self.interpolation.isChecked() and len(self.existed_signals) >= 1 :
 
+            scene2 = QGraphicsScene()
+            self.graphicsView_interpolation.setScene(scene2)
+            canvas = FigureCanvas(self.figure_interpolation)
+            scene2.addWidget(canvas)
+            state_sampling = self.freq_options.currentText()
 
+            if state_sampling == "Hz":
+                self.sampling_rate = self.sampling_frequency_slider.value()
+            else:
+                Nyquist_freq = 2 * self.max_freq
+                self.sampling_rate = self.sampling_frequency_slider.value() * Nyquist_freq
 
+            print(f"sam:{self.sampling_rate}")
+            self.Time = 1 / self.sampling_rate
+            self.Num_of_sampling_points = np.arange(0, ceil(2 / self.Time))
+            self.time = self.Time * self.Num_of_sampling_points
+            self.signals_sampling.clear()
+            for signal, attributes in self.existed_signals.items():
+                print(attributes[0], attributes[1])
+                sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
+                self.signals_sampling.append(sampler_signal)
+            sum_of_sampling_points = np.sum(self.signals_sampling, axis=0)
 
+            self.ax2.cla()
+            self.ax2.plot(self.time, sum_of_sampling_points )
+            left_margin = 0.1
+            self.ax2.set_position([left_margin, 0.12, 0.78, 0.8])
+            self.ax2.grid(True, color='gray', linestyle='--', alpha=0.5)
+            self.ax2.set_title('Reconstruction Signal')
+            self.ax2.set_xlabel('Time (s)')
+            self.ax2.set_ylabel('Amplitude')
+            canvas.draw()
 
-
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setInformativeText("Please complete the signal requirements!")
+            msg.show()
+            msg.exec_()
 
 
 def main():
