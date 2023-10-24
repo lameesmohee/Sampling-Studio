@@ -9,6 +9,7 @@ import sys
 from os import path
 import numpy as np
 from math import ceil
+import pandas as pd
 from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QMainWindow, QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -23,6 +24,8 @@ class MainApp(QMainWindow, MainUI):
     def __init__(self, parent=None):
         super(MainApp, self).__init__(parent)
         QMainWindow.__init__(self)
+        self.data_signal = None
+        self.ISsignal = False
         self.sample = False
         self.add_noise = False
         self.signal_name = None
@@ -35,8 +38,12 @@ class MainApp(QMainWindow, MainUI):
         self.ax1 = self.figure_sampling.add_subplot(111)
         self.figure_interpolation= Figure(figsize=(9.5, 3.5), dpi=80)
         self.ax2 = self.figure_interpolation.add_subplot(111)
+        self.figure_Error = Figure(figsize=(9.5, 3.5), dpi=80)
+        self.ax3 = self.figure_Error.add_subplot(111)
         self.signal_waveforms = []
         self.signals_sampling = []
+        self.error_data =None
+        self.original_data = None
         self.existed_signals = {}  # {signal_name:[freq, amp]}
         self.Noise = 0
         self.styles()
@@ -48,17 +55,19 @@ class MainApp(QMainWindow, MainUI):
 
 
     def handle_buttons(self):
+
         self.freq_up.clicked.connect(lambda: self.freq_handling(self.freq_up))
         self.freq_down.clicked.connect(lambda: self.freq_handling(self.freq_down))
         self.amp_up.clicked.connect(lambda: self.amp_handling(self.amp_up))
         self.amp_down.clicked.connect(lambda: self.amp_handling(self.amp_down))
         self.add_signal_button.clicked.connect(self.signal_name_handling)
+        self.actionopen.triggered.connect(self.browse_file)
         self.add_signal_button.clicked.connect(self.plot)
         self.sampling.toggled.connect(self.plot)
         self.sampling_frequency_slider.valueChanged.connect(self.plot)
         self.freq_options.currentTextChanged.connect(self.plot)
         self.SNR_Slider.valueChanged.connect(self.Gaussian_noise)
-        self.interpolation.toggled.connect(self.Interpolation)
+        self.interpolation.stateChanged.connect(self.Interpolation)
 
     def styles(self):
         self.graphicsView.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -151,18 +160,23 @@ class MainApp(QMainWindow, MainUI):
             self.existed_signals[self.signal_name][0] = f
             self.existed_signals[self.signal_name][1] = amp
         else:
+            if len(self.signal_name) != 0 :
+                self.existed_signals[self.signal_name] = [f, amp]
+
             # Add a new entry for the signal
-            self.existed_signals[self.signal_name] = [f, amp]
+
 
         self.check_largest_freq(self.existed_signals)
         # Time values (from 0 to 2 second)
         # 1000 data points
         t = np.linspace(0, 2, 1000)
         # Calculate the cosine waveform for the current signal
+
         signal_waveform = self.cos_creation(f, amp, t)
+        self.signal_waveforms.append(signal_waveform)
 
         # Adding each signal to a list, so it can be summed
-        self.signal_waveforms.append(signal_waveform)
+
         # print(f"signal:{self.signal_waveforms}")
         print(self.existed_signals)
 
@@ -172,14 +186,14 @@ class MainApp(QMainWindow, MainUI):
         canvas = FigureCanvas(self.figure_sampling)
         scene.addWidget(canvas)
 
-        if self.signal_waveforms:
+        if self.signal_waveforms :
             # Combine all signal waveforms
             self.ax1.cla()
             if not self.add_noise: # check if noise is added or not
                 self.combined_signal = np.sum(self.signal_waveforms, axis=0)
-                self.ax1.plot(np.linspace(0, 2, 1000), self.combined_signal)
+                self.original_data, = self.ax1.plot(np.linspace(0, 2, 1000), self.combined_signal)
             else:
-                self.ax1.plot(np.linspace(0, 2, 1000), self.combined_signal_noise)
+                self.original_data, =self.ax1.plot(np.linspace(0, 2, 1000), self.combined_signal_noise)
             left_margin = 0.1
             self.ax1.set_position([left_margin, 0.12, 0.78, 0.8])
             self.ax1.grid(True, color='gray', linestyle='--', alpha=0.5)
@@ -192,6 +206,11 @@ class MainApp(QMainWindow, MainUI):
             else:
                 if self.interpolation.isChecked():
                     self.Interpolation()
+                    self.error()
+
+
+
+
 
         else:
             msg = QMessageBox()
@@ -207,46 +226,82 @@ class MainApp(QMainWindow, MainUI):
             state_sampling = self.freq_options.currentText()
             if state_sampling == "Hz":
                 self.sampling_rate = self.sampling_frequency_slider.value()
-                print(f"sam:{self.sampling_rate}")
-                self.Time = 1 / self.sampling_rate
-                self.Num_of_sampling_points = np.arange(0, ceil(2 / self.Time))
-                self.time = self.Time * self.Num_of_sampling_points
-                self.signals_sampling.clear()
-                for signal, attributes in self.existed_signals.items():
-                    print(attributes[0], attributes[1])
-                    sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
-                    self.signals_sampling.append(sampler_signal)
-
-                sum_of_sampling_points = np.sum(self.signals_sampling, axis=0)
-                self.ax1.plot(self.time, sum_of_sampling_points, 'ro', color='r')
-
-                self.figure_sampling.canvas.draw()
-
-
             else:
-                Nyquist_freq = 2 * self.max_freq
-                print(self.sampling_frequency_slider.value())
-
+                if self.ISsignal:
+                    signal_max_freq = self.get_largest_freq_signal()
+                    max_freq =  signal_max_freq
+                    if len(self.existed_signals) >= 1:
+                        max_freq = max(signal_max_freq,self.max_freq)
+                    Nyquist_freq = 2 * max_freq
+                else:
+                    Nyquist_freq = 2 * self.max_freq
                 self.sampling_rate = self.sampling_frequency_slider.value() * Nyquist_freq
 
-                print(f"sam:{self.sampling_rate}")
-                self.Time = 1 / self.sampling_rate
-                self.Num_of_sampling_points = np.arange(0, ceil(2 / self.Time))
-                self.time = self.Time * self.Num_of_sampling_points
-                self.signals_sampling.clear()
-                for signal, attributes in self.existed_signals.items():
-                    print(attributes[0], attributes[1])
-                    sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
-                    self.signals_sampling.append(sampler_signal)
 
+        print(f"sam:{self.sampling_rate}")
+        self.Time = 1 / self.sampling_rate
+        self.Num_of_sampling_points = np.arange(0, ceil(2 / self.Time))
+        self.time = self.Time * self.Num_of_sampling_points
+        duration = np.linspace(0, 2, 1000)
+        print(f"time:{self.time}")
+        indices_to_mark = []
+
+        if self.ISsignal :
+
+            # print (f"du:{duration}")
+
+
+            for idx in self.time:
+                for index in range(len(duration)):
+                    if idx <= duration[index]:
+                        print(index)
+                        print("lll")
+                        indices_to_mark.append(index)
+                        break
+            if not self.add_noise:
+                sum_of_sampling_points = np.sum(self.signal_waveforms, axis=0)
+
+                self.ax1.plot(np.linspace(0, 2, 1000), sum_of_sampling_points, 'ro', color='r',
+                              markevery=indices_to_mark)
+            else:
+                self.ax1.plot(np.linspace(0, 2, 1000), self.combined_signal_noise, 'ro', color='r',
+                             markevery=indices_to_mark)
+
+
+
+        else:
+            self.signals_sampling.clear()
+
+            for signal, attributes in self.existed_signals.items():
+                print(f"exist:{len(self.existed_signals)}")
+                print(attributes[0], attributes[1])
+                sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
+                self.signals_sampling.append(sampler_signal)
+
+            if not self.add_noise:
                 sum_of_sampling_points = np.sum(self.signals_sampling, axis=0)
-                print(sum_of_sampling_points)
-
                 self.ax1.plot(self.time, sum_of_sampling_points, 'ro', color='r')
-                self.figure_sampling.canvas.draw()
+
+            else:
+                for idx in self.time:
+                    for index in range(len(duration)):
+                        if idx <= duration[index]:
+                            print(index)
+                            print("lll")
+                            indices_to_mark.append(index)
+                            break
+
+                self.ax1.plot(np.linspace(0, 2, 1000), self.combined_signal_noise, 'ro', color='r',
+                              markevery=indices_to_mark)
+
+
+
+        self.figure_sampling.canvas.draw()
+
 
         if self.interpolation.isChecked():
             self.Interpolation()
+            self.error()
 
 
 
@@ -263,19 +318,30 @@ class MainApp(QMainWindow, MainUI):
             if value[0] > self.max_freq:
                 self.max_freq = value[0]
 
-
-
-
         index = self.freq_options.findText(' ')
         self.freq_options.removeItem(index)
         index1 = self.freq_options.findText("Nyquist–Shannon" + ' ' + str((2 * self.prev_freq)) + ' ' + "Hz")
         self.freq_options.removeItem(index1)
 
         print(index1)
-        self.freq_options.addItem("Nyquist–Shannon" + ' ' + str((2 * self.max_freq)) + ' ' + "Hz")
+        if self.ISsignal:
+            max_freq_signal = self.get_largest_freq_signal()
+            if max_freq_signal < self.max_freq:
+                self.freq_options.addItem("Nyquist–Shannon" + ' ' + str((2 * self.max_freq)) + ' ' + "Hz")
+                index1 = self.freq_options.findText("Nyquist–Shannon" + ' ' + str((2 * max_freq_signal)) + ' ' + "Hz")
+                self.freq_options.removeItem(index1)
+
+            else:
+                self.freq_options.addItem("Nyquist–Shannon" + ' ' + str((2 *  max_freq_signal)) + ' ' + "Hz")
+
+        else:
+            self.freq_options.addItem("Nyquist–Shannon" + ' ' + str((2 * self.max_freq)) + ' ' + "Hz")
+
+
+
 
     def Gaussian_noise(self):
-        if len(self.existed_signals) >= 1:
+        if len(self.existed_signals) >= 1 or self.ISsignal:
             SNR = self.SNR_Slider.value()  # SNR = Average power of signal / Average power of noise
             print(SNR)
             self.add_noise = True
@@ -295,7 +361,7 @@ class MainApp(QMainWindow, MainUI):
             msg.exec_()
 
     def Interpolation(self):
-        if self.interpolation.isChecked() and len(self.existed_signals) >= 1 :
+        if self.interpolation.isChecked() and (len(self.existed_signals) >= 1 or self.ISsignal)  :
 
             scene2 = QGraphicsScene()
             self.graphicsView_interpolation.setScene(scene2)
@@ -306,22 +372,111 @@ class MainApp(QMainWindow, MainUI):
             if state_sampling == "Hz":
                 self.sampling_rate = self.sampling_frequency_slider.value()
             else:
-                Nyquist_freq = 2 * self.max_freq
+                if self.ISsignal:
+                    signal_max_freq = self.get_largest_freq_signal()
+                    max_freq = signal_max_freq
+
+                    if len(self.existed_signals) >= 1:
+                        max_freq = max(signal_max_freq, self.max_freq)
+                    Nyquist_freq = 2 * max_freq
+                else:
+                    Nyquist_freq = 2 * self.max_freq
+
                 self.sampling_rate = self.sampling_frequency_slider.value() * Nyquist_freq
 
             print(f"sam:{self.sampling_rate}")
             self.Time = 1 / self.sampling_rate
             self.Num_of_sampling_points = np.arange(0, ceil(2 / self.Time))
             self.time = self.Time * self.Num_of_sampling_points
-            self.signals_sampling.clear()
-            for signal, attributes in self.existed_signals.items():
-                print(attributes[0], attributes[1])
-                sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
-                self.signals_sampling.append(sampler_signal)
-            sum_of_sampling_points = np.sum(self.signals_sampling, axis=0)
+            duration = np.linspace(0,2,1000)
 
+            # print (f"du:{duration}")
+            indices_to_mark = []
             self.ax2.cla()
-            self.ax2.plot(self.time, sum_of_sampling_points )
+
+            if self.ISsignal:
+                self.signals_sampling.clear()
+                if self.add_noise:
+                    sum_of_sampling_points = []
+                    for idx in self.time:
+                        for index in range(len(duration)):
+                            if idx <= duration[index]:
+                                print(index)
+                                print("lll")
+                                indices_to_mark.append(index)
+                                break
+                    for time in indices_to_mark:
+                        sum_of_sampling_points.append(self.combined_signal_noise[time])
+
+                else:
+                    for idx in self.time:
+                        for index in range(len(duration)):
+                            if idx <= duration[index]:
+                                print(index)
+                                print("lll")
+                                indices_to_mark.append(index)
+                                break
+                    sampling_data_signal = []
+                    for item in indices_to_mark:  ## for interpolation
+                        sampling_data_signal.append(self.data_signal[item])
+
+                    self.signals_sampling.append(sampling_data_signal)
+
+                    print(indices_to_mark)
+                    if len(self.existed_signals) >= 1:
+
+                        for signal, attributes in self.existed_signals.items():
+                            print(attributes[0], attributes[1])
+                            sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
+                            self.signals_sampling.append(sampler_signal)
+                    sum_of_sampling_points = np.sum(self.signals_sampling, axis=0)
+
+                y_reconstruction = np.zeros(len(duration))
+                for i in range(0, len(duration)):
+                    for n in self.Num_of_sampling_points:
+                        y_reconstruction[i] += sum_of_sampling_points[n] * np.sinc(
+                            (duration[i] - self.time[n]) / self.Time)
+
+                self.reconstruction_data, = self.ax2.plot(duration, y_reconstruction)
+
+
+
+
+            else:
+                if self.add_noise:
+                    sum_of_sampling_points = []
+                    for idx in self.time:
+                        for index in range(len(duration)):
+                            if idx <= duration[index]:
+                                print(index)
+                                print("lll")
+                                indices_to_mark.append(index)
+                                break
+                    for time in indices_to_mark:
+                        sum_of_sampling_points.append(self.combined_signal_noise[time])
+
+                else:
+                    self.signals_sampling.clear()
+                    for signal, attributes in self.existed_signals.items():
+                        print(attributes[0], attributes[1])
+                        sampler_signal = self.cos_creation(attributes[0], attributes[1], self.time)
+                        self.signals_sampling.append(sampler_signal)
+                    sum_of_sampling_points = np.sum(self.signals_sampling, axis=0)
+
+                y_reconstruction = np.zeros(len(duration))
+                for i in range(0, len(duration)):
+                    for n in self.Num_of_sampling_points:
+                        y_reconstruction[i] += sum_of_sampling_points[n] * np.sinc(
+                            (duration[i] - self.time[n])/self.Time)
+
+
+
+                self.reconstruction_data, = self.ax2.plot(duration,y_reconstruction)
+
+
+
+
+
             left_margin = 0.1
             self.ax2.set_position([left_margin, 0.12, 0.78, 0.8])
             self.ax2.grid(True, color='gray', linestyle='--', alpha=0.5)
@@ -331,11 +486,76 @@ class MainApp(QMainWindow, MainUI):
             canvas.draw()
 
         else:
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Warning)
-            msg.setInformativeText("Please complete the signal requirements!")
-            msg.show()
-            msg.exec_()
+            if (len(self.existed_signals) >= 1 or self.ISsignal) and not self.interpolation.isChecked():
+                print("ksd.")
+                self.figure_interpolation.clear()
+                self.figure_interpolation.canvas.draw()
+                self.figure_interpolation = Figure(figsize=(9.5, 3.5), dpi=80)
+                self.ax2 = self.figure_interpolation.add_subplot(111)
+
+
+            else:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setInformativeText("Please complete the signal requirements!")
+                msg.show()
+                msg.exec_()
+
+
+    def browse_file(self):
+        print("jskj")
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "",
+                                                   "CSV Files (*.csv)",
+                                                   options=options)
+
+        self.data_signal = pd.read_csv(file_name)
+
+        self.data_signal = self.data_signal[:1000]
+        self.data_signal = self.data_signal.iloc[:, 0].tolist()
+        self.ISsignal = True
+        self.signal_waveforms.append(self.data_signal)
+        max_freq  = self.get_largest_freq_signal()
+        self.freq_options.addItem("Nyquist–Shannon" + ' ' + str((2 * max_freq)) + ' ' + "Hz")
+
+        self.plot()
+
+    def get_largest_freq_signal(self):
+        fft_result = np.fft.fft(self.data_signal)
+        n = len(fft_result)
+        frequencies = np.fft.fftfreq(n)
+        max_freq = max(frequencies)
+
+        return  max_freq
+
+    def error(self):
+
+
+        scene2 = QGraphicsScene()
+        self.graphicsView_error.setScene(scene2)
+        canvas = FigureCanvas(self.figure_Error)
+        scene2.addWidget(canvas)
+        self.ax3.cla()
+
+        y_original_data = self.original_data.get_ydata()
+        y_reconstruction_data = self.reconstruction_data.get_ydata()
+        error_y = np.subtract(y_original_data,y_reconstruction_data)
+        time = np.linspace(0, 2, 1000)
+
+        self.ax3.plot(time,error_y)
+        left_margin = 0.1
+        self.ax3.set_position([left_margin, 0.12, 0.78, 0.8])
+        self.ax3.grid(True, color='gray', linestyle='--', alpha=0.5)
+        self.ax3.set_title('Error Signal')
+        self.ax3.set_xlabel('Time (s)')
+        self.ax3.set_ylabel('Amplitude')
+        canvas.draw()
+
+
+
+
+
+
 
 
 def main():
