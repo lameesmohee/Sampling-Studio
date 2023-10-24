@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1259</width>
+    <width>1353</width>
     <height>1063</height>
    </rect>
   </property>
@@ -17,6 +17,12 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QFrame" name="frame_4">
         <property name="minimumSize">
@@ -64,8 +70,17 @@
            <height>31</height>
           </rect>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
-          <string notr="true">border: transparent;</string>
+          <string notr="true">QLineEdit{
+border: none;
+border-bottom: 2px solid #cccccc;}
+QLineEdit:focus{
+border-bottom: 2px solid black;}</string>
          </property>
         </widget>
         <widget class="QPushButton" name="freq_up">
@@ -109,6 +124,28 @@
            <height>31</height>
           </rect>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">/* style for the QComboBox */ #signals_names {
+border: 1px solid #ced4da;
+border-radius: 4px; padding-left: 10px;
+}
+
+/* style for drop down area */
+#signals_names::drop-down { border: 0px;
+}
+/* style for drop down arrow */ #signals_names::down-arrow {
+     image:url(C:/Users/delta/OneDrive/Desktop/sampling/.idea/25623.png);
+    width: 12px;
+    height: 12px;
+    margin-right: 15px;
+}
+</string>
+         </property>
         </widget>
         <widget class="QLabel" name="label_4">
          <property name="geometry">
@@ -133,14 +170,31 @@
           <rect>
            <x>10</x>
            <y>310</y>
-           <width>101</width>
-           <height>31</height>
+           <width>130</width>
+           <height>37</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+
+border-radius: 8px;
+padding: 1px 5px;
+min-width: 120px;
+min-height:35px;
+color: #fff;
+background-color: #212529
+}
+QPushButton::hover{
+background-color: #1c1f23;
+}
+QPushButton:pressed{
+background-color: #a0a2a4;
+}</string>
          </property>
          <property name="text">
           <string>Add Signal</string>
@@ -151,14 +205,31 @@
           <rect>
            <x>10</x>
            <y>460</y>
-           <width>75</width>
-           <height>31</height>
+           <width>130</width>
+           <height>37</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+
+border-radius: 8px;
+padding: 1px 5px;
+min-width: 120px;
+min-height:35px;
+color: #fff;
+background-color: #212529
+}
+QPushButton::hover{
+background-color: #1c1f23;
+}
+QPushButton:pressed{
+background-color: #a0a2a4;
+}</string>
          </property>
          <property name="text">
           <string>Delete</string>
@@ -173,8 +244,17 @@
            <height>31</height>
           </rect>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
-          <string notr="true">border: transparent;</string>
+          <string notr="true">QLineEdit{
+border: none;
+border-bottom: 2px solid #cccccc;}
+QLineEdit:focus{
+border-bottom: 2px solid black;}</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_3">
@@ -236,8 +316,17 @@
            <height>31</height>
           </rect>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
-          <string notr="true">border: transparent;</string>
+          <string notr="true">QLineEdit{
+border: none;
+border-bottom: 2px solid #cccccc;}
+QLineEdit:focus{
+border-bottom: 2px solid black;}</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_2">
@@ -285,6 +374,31 @@
            <height>18</height>
           </rect>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QSlider::groove:horizontal {
+                            border: 1px solid #999999;
+                            height: 2ps;     
+                        }
+
+                       QSlider::handle:horizontal {
+                             background: #eb583b;
+                             width: 10px;
+                            margin: -5px -1px ;
+                            border-radius: 5px;
+                            border: 1px solid #2a2a2a;} 
+QSlider::add-page:horizontal{
+        background: qlineargradient(x1:0, y1:0, x2:0, stop:0 #B1B1B1, stop:1 #c4c4c4;)
+}
+QSlider::sub-page:horizontal{
+        background: #eb583b;
+}
+QSlider::handle:horizontal:hover {
+                             background: #007ad9;
+                             border-color: #007ad9;
+
+} 
+    </string>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -303,6 +417,13 @@
            <pointsize>10</pointsize>
           </font>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox::indicator:checked {
+    background-color: #eb583b; /* Change the background color when checked */
+    border: 1px solid #007ACC; /* Add a border around the checkbox when checked */
+}
+</string>
+         </property>
          <property name="text">
           <string>Show Interpolation</string>
          </property>
@@ -320,6 +441,13 @@
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox::indicator:checked {
+    background-color: #eb583b; /* Change the background color when checked */
+    border: 1px solid #007ACC; /* Add a border around the checkbox when checked */
+}
+</string>
          </property>
          <property name="text">
           <string>Show Samples Points</string>
@@ -346,6 +474,28 @@
            <width>211</width>
            <height>31</height>
           </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">/* style for the QComboBox */ #freq_options {
+border: 1px solid #ced4da;
+border-radius: 4px; padding-left: 10px;
+}
+
+/* style for drop down area */
+#freq_options::drop-down { border: 0px;
+}
+/* style for drop down arrow */ #freq_options::down-arrow {
+     image:url(C:/Users/delta/OneDrive/Desktop/sampling/.idea/25623.png);
+    width: 12px;
+    height: 12px;
+    margin-right: 15px;
+}
+</string>
          </property>
          <item>
           <property name="text">
@@ -385,8 +535,69 @@
            <height>18</height>
           </rect>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QSlider::groove:horizontal {
+                            border: 1px solid #999999;
+                            height: 2ps;     
+                        }
+
+                       QSlider::handle:horizontal {
+                             background: #eb583b;
+                             width: 10px;
+                            margin: -5px -1px ;
+                            border-radius: 5px;
+                            border: 1px solid #2a2a2a;} 
+QSlider::add-page:horizontal{
+        background: qlineargradient(x1:0, y1:0, x2:0, stop:0 #B1B1B1, stop:1 #c4c4c4;)
+}
+QSlider::sub-page:horizontal{
+        background: #eb583b;
+}
+QSlider::handle:horizontal:hover {
+                             background: #007ad9;
+                             border-color: #007ad9;
+
+} 
+    </string>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="snr_value">
+         <property name="geometry">
+          <rect>
+           <x>210</x>
+           <y>530</y>
+           <width>49</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="freq_value">
+         <property name="geometry">
+          <rect>
+           <x>210</x>
+           <y>710</y>
+           <width>49</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </widget>
@@ -399,13 +610,13 @@
        <widget class="QFrame" name="frame">
         <property name="minimumSize">
          <size>
-          <width>700</width>
+          <width>800</width>
           <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>700</width>
+          <width>1000</width>
           <height>400</height>
          </size>
         </property>
@@ -418,15 +629,15 @@
         <widget class="QGraphicsView" name="graphicsView">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>10</x>
            <y>0</y>
-           <width>700</width>
+           <width>901</width>
            <height>291</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
-           <width>700</width>
+           <width>1000</width>
            <height>400</height>
           </size>
          </property>
@@ -441,13 +652,13 @@
        <widget class="QFrame" name="frame_2">
         <property name="minimumSize">
          <size>
-          <width>700</width>
+          <width>800</width>
           <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>700</width>
+          <width>1000</width>
           <height>400</height>
          </size>
         </property>
@@ -460,15 +671,15 @@
         <widget class="QGraphicsView" name="graphicsView_interpolation">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>10</x>
            <y>10</y>
-           <width>700</width>
-           <height>281</height>
+           <width>901</width>
+           <height>291</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
-           <width>700</width>
+           <width>1000</width>
            <height>400</height>
           </size>
          </property>
@@ -484,14 +695,14 @@
        <widget class="QFrame" name="frame_3">
         <property name="minimumSize">
          <size>
-          <width>700</width>
+          <width>800</width>
           <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>700</width>
-          <height>350</height>
+          <width>1000</width>
+          <height>400</height>
          </size>
         </property>
         <property name="frameShape">
@@ -503,15 +714,15 @@
         <widget class="QGraphicsView" name="graphicsView_error">
          <property name="geometry">
           <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>700</width>
+           <x>10</x>
+           <y>20</y>
+           <width>901</width>
            <height>281</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
-           <width>700</width>
+           <width>1000</width>
            <height>400</height>
           </size>
          </property>
@@ -531,25 +742,22 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1259</width>
-     <height>26</height>
+     <width>1353</width>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="open_file">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="actionopen"/>
    </widget>
-   <addaction name="open_file"/>
+   <addaction name="menuFile"/>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionopen">
    <property name="text">
-    <string>open </string>
+    <string>Upload a Medical Signal</string>
    </property>
   </action>
  </widget>
