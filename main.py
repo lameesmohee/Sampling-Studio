@@ -123,6 +123,54 @@ class MainApp(QMainWindow, MainUI):
         text = self.signals_names.currentText()
         self.current_combox_text = text
 
+
+    def Zoom_in(self,button_name):
+        if button_name == self.Qwindow.zoom_in_button_graph1:
+            y_min, y_max = self.ax1.get_ylim()
+            y_min += 0.05
+            y_max -= 0.05
+            self.ax1.set_ylim(y_min, y_max)
+            # canvas refers to the area where the figure and its subplots are drawn
+            self.figure_sampling.canvas.draw()
+        elif button_name == self.Qwindow.zoom_in_button_graph2:
+            y_min, y_max = self.ax2.get_ylim()
+            y_min += 0.05
+            y_max -= 0.05
+            self.ax2.set_ylim(y_min, y_max)
+            # canvas refers to the area where the figure and its subplots are drawn
+            self.figure_interpolation.canvas.draw()
+        else:
+            y_min, y_max = self.ax3.get_ylim()
+            y_min += 0.05
+            y_max -= 0.05
+            self.ax3.set_ylim(y_min, y_max)
+            # canvas refers to the area where the figure and its subplots are drawn
+            self.figure_Error.canvas.draw()
+
+
+    def Zoom_out(self,button_name):
+        if button_name == self.Qwindow.zoom_out_button_graph1:
+            y_min, y_max = self.ax1.get_ylim()
+            y_min -= 0.05
+            y_max += 0.05
+            self.ax1.set_ylim(y_min, y_max)
+            # canvas refers to the area where the figure and its subplots are drawn
+            self.figure_sampling.canvas.draw()
+        elif button_name == self.Qwindow.zoom_out_button_graph2:
+            y_min, y_max = self.ax2.get_ylim()
+            y_min -= 0.05
+            y_max += 0.05
+            self.ax2.set_ylim(y_min, y_max)
+            # canvas refers to the area where the figure and its subplots are drawn
+            self.figure_interpolation.canvas.draw()
+        else:
+            y_min, y_max = self.ax3.get_ylim()
+            y_min -= 0.05
+            y_max += 0.05
+            self.ax3.set_ylim(y_min, y_max)
+            # canvas refers to the area where the figure and its subplots are drawn
+            self.figure_Error.canvas.draw()
+
     def delete_signal(self):
 
         # Checking if it's a File or a user made signal
