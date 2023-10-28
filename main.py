@@ -76,7 +76,7 @@ class MainApp(QMainWindow, MainUI):
         QCoreApplication.processEvents()
         self.add_signal_button.clicked.connect(self.plot)
         QCoreApplication.processEvents()
-        self.signals_names.currentIndexChanged.connect(self.on_combobox_change)
+        self.signals_names_delete.currentIndexChanged.connect(self.on_combobox_change)
         QCoreApplication.processEvents()
         self.delete_signal_button.clicked.connect(self.delete_signal)
         QCoreApplication.processEvents()
@@ -120,7 +120,7 @@ class MainApp(QMainWindow, MainUI):
     def on_combobox_change(self, index):
         # The 'index' parameter contains the index of the selected item
         self.current_combox_index = index
-        text = self.signals_names.currentText()
+        text = self.signals_names_delete.currentText()
         self.current_combox_text = text
 
 
@@ -172,22 +172,27 @@ class MainApp(QMainWindow, MainUI):
             self.figure_Error.canvas.draw()
 
     def delete_signal(self):
+        current_signal = self.signals_names_delete.currentText()
 
         # Checking if it's a File or a user made signal
         self.deleted = True
-        if self.ISsignal:
-            self.signal_waveforms.pop(self.current_combox_index)
-            self.freq_options.removeItem(self.current_combox_index + 1)
-            self.signals_names.removeItem(self.current_combox_index)
-            QCoreApplication.processEvents()
-            self.ISsignal = False
-            self.plot()
+
+        if current_signal not in self.existed_signals:
+            if self.ISsignal:
+                self.signal_waveforms.pop(self.current_combox_index)
+                self.freq_options.removeItem(self.current_combox_index + 1)
+                self.signals_names_delete.removeItem(self.current_combox_index)
+                QCoreApplication.processEvents()
+                self.ISsignal = False
+                self.plot()
+
+
         else:
             self.signal_waveforms.pop(self.current_combox_index)
             self.freq_options.removeItem(self.current_combox_index + 1)
             del self.existed_signals[self.current_combox_text]
             print(f"len:{len(self.existed_signals) , self.existed_signals}")
-            self.signals_names.removeItem(self.current_combox_index)
+            self.signals_names_delete.removeItem(self.current_combox_index)
             QCoreApplication.processEvents()
             self.plot()
 
@@ -248,7 +253,7 @@ class MainApp(QMainWindow, MainUI):
             msg.show()
             msg.exec_()
         else:
-            self.signals_names.addItem(self.signal_name)
+            self.signals_names_delete.addItem(self.signal_name)
             self.update_signal_waveforms()
 
     def cos_creation(self, f, amp, t=0):
@@ -282,8 +287,8 @@ class MainApp(QMainWindow, MainUI):
         self.graphicsView.setScene(scene)
         canvas = FigureCanvas(self.figure_sampling)
         scene.addWidget(canvas)
-        print('signal_count: ', self.signals_names.count())
-        if self.signals_names.count() == 0:
+        print('signal_count: ', self.signals_names_delete.count())
+        if self.signals_names_delete.count() == 0:
             self.figure_sampling.clear()
             self.figure_sampling.canvas.draw()
             self.figure_interpolation.clear()
@@ -561,7 +566,7 @@ class MainApp(QMainWindow, MainUI):
                                                    options=options)
         print(file_name)
         file_name_actual = file_name.split('/')[-1].split('.')[0]
-        self.signals_names.addItem(file_name_actual)
+        self.signals_names_delete.addItem(file_name_actual)
         # self.existed_signals[file_name_actual] = []
         self.data_signal = pd.read_csv(file_name)
         self.data_signal = self.data_signal[:1000]
