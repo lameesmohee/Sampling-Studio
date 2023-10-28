@@ -60,4 +60,4 @@ A desktop application showcasing the Nyquist-Shannon sampling theorem. Users can
 
 - Prof. Tamer Basha & Eng. Abdullah Darwish
 
-All rights reserved © 2023 to Team 9 - Systems & Biomedi
+All rights reserved © 2023 to Team 9 - Systems & Biomedical Engineering, Cairo University (Class 2025)
