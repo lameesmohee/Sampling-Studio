@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1513</width>
-    <height>1063</height>
+    <width>1676</width>
+    <height>1027</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -115,7 +115,7 @@ border-bottom: 2px solid black;}</string>
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QComboBox" name="signals_names">
+        <widget class="QComboBox" name="signals_names_delete">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -130,15 +130,15 @@ border-bottom: 2px solid black;}</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">/* style for the QComboBox */ #signals_names {
+          <string notr="true">/* style for the QComboBox */ #signals_names_delete {
 border: 1px solid #ced4da;
 border-radius: 4px; padding-left: 10px;
 }
 
 /* style for drop down area */
-#signals_names::drop-down { border: 0px;
+#signals_names_delete::drop-down { border: 0px;
 }
-/* style for drop down arrow */ #signals_names::down-arrow {
+/* style for drop down arrow */ #signals_names_delete::down-arrow {
      image:url(C:/Users/delta/OneDrive/Desktop/sampling/.idea/25623.png);
     width: 12px;
     height: 12px;
@@ -616,7 +616,7 @@ QSlider::handle:horizontal:hover {
         </property>
         <property name="maximumSize">
          <size>
-          <width>1000</width>
+          <width>1100</width>
           <height>400</height>
          </size>
         </property>
@@ -631,14 +631,14 @@ QSlider::handle:horizontal:hover {
           <rect>
            <x>10</x>
            <y>-10</y>
-           <width>851</width>
-           <height>311</height>
+           <width>1000</width>
+           <height>300</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>1000</width>
-           <height>400</height>
+           <height>300</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -649,7 +649,7 @@ QSlider::handle:horizontal:hover {
         <widget class="QPushButton" name="zoom_in_button_graph1">
          <property name="geometry">
           <rect>
-           <x>870</x>
+           <x>1050</x>
            <y>100</y>
            <width>31</width>
            <height>31</height>
@@ -665,7 +665,7 @@ QSlider::handle:horizontal:hover {
         <widget class="QPushButton" name="zoom_out_button_graph1">
          <property name="geometry">
           <rect>
-           <x>870</x>
+           <x>1050</x>
            <y>130</y>
            <width>31</width>
            <height>31</height>
@@ -690,7 +690,7 @@ QSlider::handle:horizontal:hover {
         </property>
         <property name="maximumSize">
          <size>
-          <width>1000</width>
+          <width>1100</width>
           <height>400</height>
          </size>
         </property>
@@ -705,14 +705,14 @@ QSlider::handle:horizontal:hover {
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>851</width>
-           <height>301</height>
+           <width>1000</width>
+           <height>300</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>1000</width>
-           <height>400</height>
+           <height>350</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -724,7 +724,7 @@ QSlider::handle:horizontal:hover {
         <widget class="QPushButton" name="zoom_in_button_graph2">
          <property name="geometry">
           <rect>
-           <x>870</x>
+           <x>1050</x>
            <y>120</y>
            <width>31</width>
            <height>31</height>
@@ -740,7 +740,7 @@ QSlider::handle:horizontal:hover {
         <widget class="QPushButton" name="zoom_out_button_graph2">
          <property name="geometry">
           <rect>
-           <x>870</x>
+           <x>1050</x>
            <y>150</y>
            <width>31</width>
            <height>31</height>
@@ -765,7 +765,7 @@ QSlider::handle:horizontal:hover {
         </property>
         <property name="maximumSize">
          <size>
-          <width>1000</width>
+          <width>1100</width>
           <height>400</height>
          </size>
         </property>
@@ -780,14 +780,14 @@ QSlider::handle:horizontal:hover {
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>851</width>
-           <height>281</height>
+           <width>1000</width>
+           <height>300</height>
           </rect>
          </property>
          <property name="maximumSize">
           <size>
            <width>1000</width>
-           <height>400</height>
+           <height>350</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -798,8 +798,8 @@ QSlider::handle:horizontal:hover {
         <widget class="QPushButton" name="zoom_in_button_graph3">
          <property name="geometry">
           <rect>
-           <x>870</x>
-           <y>150</y>
+           <x>1050</x>
+           <y>120</y>
            <width>31</width>
            <height>31</height>
           </rect>
@@ -814,8 +814,8 @@ QSlider::handle:horizontal:hover {
         <widget class="QPushButton" name="zoom_out_button_graph3">
          <property name="geometry">
           <rect>
-           <x>870</x>
-           <y>120</y>
+           <x>1050</x>
+           <y>150</y>
            <width>31</width>
            <height>31</height>
           </rect>
@@ -838,7 +838,7 @@ QSlider::handle:horizontal:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1513</width>
+     <width>1676</width>
      <height>22</height>
     </rect>
    </property>
